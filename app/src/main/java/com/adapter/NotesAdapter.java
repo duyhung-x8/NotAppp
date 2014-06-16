@@ -1,6 +1,7 @@
 package com.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import com.note.model.Notes;
 import com.notet.activity.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by DUYHUNG on 16-06-2014.
@@ -19,12 +21,13 @@ import java.util.ArrayList;
 public class NotesAdapter extends BaseAdapter {
 
     Context context;
-    ArrayList<Notes> arrNotes = null;
+    ArrayList<Notes> arrNotes = new ArrayList<Notes>();
 
     public NotesAdapter(Context context, ArrayList<Notes> arrNotes) {
         super();
         this.context = context;
         this.arrNotes = arrNotes;
+        Log.d("Load noteBaseAdapter","ddddddddddddddddddddd");
     }
 
     @Override
@@ -52,18 +55,23 @@ public class NotesAdapter extends BaseAdapter {
     @Override
     public View getView(int i, View convertView, ViewGroup viewGroup) {
         ViewHolder viewHolder = null;
-
+        Log.d("Note Adapter","note size :"+arrNotes.size());
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         if (convertView == null) {
+            Log.d("Note Adapter","converView Null :");
             convertView = inflater.inflate(R.layout.custom_item_notes, null);
-            viewHolder.txtTitle = (TextView) convertView.findViewById(R.id.txtTitle);
-            viewHolder.txtContent = (TextView) convertView.findViewById(R.id.txtContent);
-            viewHolder.txtCreateDate = (TextView) convertView.findViewById(R.id.txtCreatedDate);
-            viewHolder.imgAlarm = (ImageView) convertView.findViewById(R.id.imgAlarm);
+//            viewHolder.txtTitle = (TextView) convertView.findViewById(R.id.txtTitle);
+//            viewHolder.txtContent = (TextView) convertView.findViewById(R.id.txtContent);
+//            viewHolder.txtCreateDate = (TextView) convertView.findViewById(R.id.txtCreatedDate);
+//            viewHolder.imgAlarm = (ImageView) convertView.findViewById(R.id.imgAlarm);
+             viewHolder = new ViewHolder();
+            convertView.setTag(viewHolder);
         } else {
+            Log.d("Note Adapter","converView Not Null :");
             viewHolder = (ViewHolder) convertView.getTag();
         }
+        Log.d("Note Adapter","note size 2:"+arrNotes.size());
         Notes notes = arrNotes.get(i);
 
         viewHolder.txtTitle.setText(notes.getTitle());

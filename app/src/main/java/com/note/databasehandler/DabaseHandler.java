@@ -10,6 +10,7 @@ import android.util.Log;
 import com.note.model.Notes;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by DUYHUNG on 16-06-2014.
@@ -72,7 +73,7 @@ public class DabaseHandler extends SQLiteOpenHelper {
         // insert row
         db.insert(TABLE_NOTES, null, values);
         db.close();
-        Log.d("Add NOTE",note.toString());
+        Log.d("Add Insert NOTE", note.toString());
 
 
     }
@@ -82,7 +83,8 @@ public class DabaseHandler extends SQLiteOpenHelper {
         Notes notes = new Notes();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(TABLE_NOTES, new String[]{KEY_ID, KEY_TITLE, KEY_CONTENT, KEY_CREATED_DATE, KEY_ALARM, KEY_BACGROUND}, KEY_ID + "=?", null, null, null, null);
-        if (cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
+
             notes.setId(Integer.parseInt(cursor.getString(0)));
             notes.setTitle(cursor.getString(1));
             notes.setContent(cursor.getString(2));
@@ -91,43 +93,50 @@ public class DabaseHandler extends SQLiteOpenHelper {
             notes.setBackground(cursor.getString(5));
 
         }
-        Log.d("Get Note",notes.toString());
+        Log.d("Get Note", notes.toString());
 
         return notes;
     }
+
     // get allnote
-    public ArrayList<Notes> getAllNotes(){
-        SQLiteDatabase db=this.getWritableDatabase();
-        ArrayList<Notes> arrNotes =new ArrayList<Notes>();
-        String selectQuery="SELECT * FROM "+TABLE_NOTES;
-        Cursor cursor=db.rawQuery(TABLE_NOTES,null);
-        Notes notes=null;
-        if (cursor.moveToFirst()){
+    public ArrayList<Notes> getAllNotes() {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        ArrayList<Notes> arrNotes = new ArrayList<Notes>();
+        String selectQuery = "SELECT * FROM " + TABLE_NOTES;
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        Log.d("Get all nots", "Note size :" + cursor.getCount());
+        if (cursor.moveToFirst()) {
+            Log.d("GetAll NOTEdddddddddddddd", "MoveToFirst");
             do {
-                notes=new Notes();
-                notes.setId(Integer.parseInt(cursor.getString(0)));
+                Notes notes = new Notes();
+                //notes.setId(Integer.parseInt(cursor.getString(0)));
                 notes.setTitle(cursor.getString(1));
                 notes.setContent(cursor.getString(2));
                 notes.setCreatedDate(cursor.getString(3));
                 notes.setAlarm(cursor.getString(4));
                 notes.setBackground(cursor.getString(5));
+
                 arrNotes.add(notes);
 
-            }while (cursor.moveToNext());
+                Log.d("GetAll NOTEdddddddddddddd", notes.toString());
+            } while (cursor.moveToNext());
         }
-        Log.d("GetAll NOTE",notes.toString());
+
 
         return arrNotes;
     }
+
     // count note
-    public int countNotes(){
-        SQLiteDatabase db=this.getReadableDatabase();
-        String selectQuery="SELECT * FROM "+TABLE_NOTES;
-        Cursor cursor=db.rawQuery(TABLE_NOTES,null);
+    public int countNotes() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectQuery = "SELECT * FROM " + TABLE_NOTES;
+        Cursor cursor = db.rawQuery(TABLE_NOTES, null);
         cursor.close();
         return cursor.getCount();
     }
-    public int updateNotes(Notes notes){
+
+    public int updateNotes(Notes notes) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_TITLE, note.getTitle());
@@ -136,15 +145,16 @@ public class DabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_ALARM, note.getAlarm());
         values.put(KEY_BACGROUND, note.getBackground());
 
-        int i=db.update(TABLE_NOTES, values,KEY_ID+"=?",new String[]{String.valueOf(notes.getId())});
+        int i = db.update(TABLE_NOTES, values, KEY_ID + "=?", new String[]{String.valueOf(notes.getId())});
         db.close();
-        Log.d("UPDATE NOTE",notes.toString());
+        Log.d("UPDATE NOTE", notes.toString());
         return i;
     }
-    public void deleteNotes(Notes notes){
-        SQLiteDatabase db=this.getWritableDatabase();
-        db.delete(TABLE_NOTES,KEY_ID+"=?",new String[]{String.valueOf(notes.getId())});
+
+    public void deleteNotes(Notes notes) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_NOTES, KEY_ID + "=?", new String[]{String.valueOf(notes.getId())});
         db.close();
-        Log.d("DELETE NOTE",notes.toString());
+        Log.d("DELETE NOTE", notes.toString());
     }
 }

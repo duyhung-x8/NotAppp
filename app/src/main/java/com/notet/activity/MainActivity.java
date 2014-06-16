@@ -11,20 +11,26 @@ import android.widget.ArrayAdapter;
 import android.widget.GridView;
 
 import com.adapter.NotesAdapter;
+import com.adapter.NotesArrayAdapter;
 import com.note.databasehandler.DabaseHandler;
 import com.note.model.Notes;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends Activity {
 
-    Context context;
+    Activity activity;
     DabaseHandler myDabaseHandler;
 
-    ArrayList<Notes> arrNotes=null;
-    NotesAdapter adapterNote=null;
+
+    ArrayList<Notes> arrNote = null;
+    NotesArrayAdapter adapter = null;
+    //NotesAdapter adapterNote=null;
     GridView gvNotes;
+    Notes note;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,31 +40,32 @@ public class MainActivity extends Activity {
 
     }
 
-    public void loadMain(){
-        myDabaseHandler=new DabaseHandler(this);
-
+    public void loadMain() {
+        myDabaseHandler = new DabaseHandler(this);
         gvNotes = (GridView) findViewById(R.id.gvNote);
         try {
-            arrNotes = myDabaseHandler.getAllNotes();
-            adapterNote=new NotesAdapter(context,arrNotes);
-            gvNotes.setAdapter(adapterNote);
+            arrNote = myDabaseHandler.getAllNotes();
+            Log.d("Notes size :", arrNote.size() + "");
+            adapter = new NotesArrayAdapter(activity, R.layout.custom_item_notes, arrNote);
+            gvNotes.setAdapter(adapter);
 
-        }catch (Exception e){
-            Log.d("MainActivity","Error Loading...DB(db null)");
         }
-
+        catch (Exception e){
+            Log.d("Loading...db", "Error...(DB)");
+        }
     }
+
     @Override
     protected void onResume() {
         super.onResume();
         loadMain();
-        Log.d("MainActivity","Call event OnResume()");
+        Log.d("MainActivity", "Call event OnResume()");
 
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        
+
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
@@ -71,9 +78,9 @@ public class MainActivity extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_addNote) {
-            Intent i = new Intent(MainActivity.this,AddNote.class);
+            Intent i = new Intent(MainActivity.this, AddNote.class);
             startActivity(i);
-            Log.d("MainActivity","Call AddNote class");
+            Log.d("MainActivity", "Call AddNote class");
             return true;
         }
         return super.onOptionsItemSelected(item);
