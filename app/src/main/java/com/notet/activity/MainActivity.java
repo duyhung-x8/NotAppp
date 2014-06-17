@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
+import android.widget.RelativeLayout;
 
 import com.adapter.NotesAdapter;
 import com.adapter.NotesArrayAdapter;
@@ -31,24 +32,33 @@ public class MainActivity extends Activity {
     //NotesAdapter adapterNote=null;
     GridView gvNotes;
     Notes note;
+    public  static  RelativeLayout rlItem ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+//        setContentView(R.layout.activity_main);
         loadMain();
-
     }
 
     public void loadMain() {
+
         myDabaseHandler = new DabaseHandler(this);
-        gvNotes = (GridView) findViewById(R.id.gvNote);
-            arrNote = myDabaseHandler.getAllNotes();
+        rlItem= (RelativeLayout) findViewById(R.id.rlitem);
+        //myDabaseHandler.deleteNotes();
+
+        arrNote = myDabaseHandler.getAllNotes();
+
+        if (arrNote.size() > 0) {
+            setContentView(R.layout.activity_main);
+            gvNotes = (GridView) findViewById(R.id.gvNote);
             Log.d("MainActivity Notes size :", arrNote.size() + "");
             adapter = new NotesArrayAdapter(this, R.layout.custom_item_notes, arrNote);
-            Log.d("MainActivity adapter :","load adapterErrro..");
+          //  Log.d("MainActivity adapter :", "load adapterErrro..");
             gvNotes.setAdapter(adapter);
-
+        } else {
+            setContentView(R.layout.activity_main_no_notes);
+        }
     }
 
     @Override

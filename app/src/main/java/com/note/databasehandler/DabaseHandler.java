@@ -157,4 +157,10 @@ public class DabaseHandler extends SQLiteOpenHelper {
         db.close();
         Log.d("DELETE NOTE", notes.toString());
     }
+    public void deleteNotes() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM "+TABLE_NOTES);
+        db.close();
+        Log.d("DELETE NOTE", "delete all notes");
+    }
 }

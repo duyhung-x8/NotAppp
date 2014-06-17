@@ -1,5 +1,6 @@
 package com.notet.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -38,37 +39,35 @@ public class ChooseColor extends Activity {
 
     private class myOnclickListener implements View.OnClickListener {
 
+        @SuppressLint("ResourceAsColor")
         @Override
         public void onClick(View view) {
             int id = view.getId();
             switch (id) {
                 case R.id.btnWhite:
-                    llAddNote.setBackgroundColor(R.color.color_white);
-                    setBackground("WHITE");
+                    setBackground(AddNote.RESULT_COLOR_WHITE);
                     break;
                 case R.id.btnYellow:
-                    llAddNote.setBackgroundColor(R.color.color_yellow);
-                    setBackground("YELLOW");
+                    setBackground(AddNote.RESULT_COLOR_YELLOW);
                     break;
                 case R.id.btnGreen:
-                    llAddNote.setBackgroundColor(R.color.color_green);
-                    setBackground("GREEN");
+                    setBackground(AddNote.RESULT_COLOR_GREEN);
                     break;
                 case R.id.btnBlue:
-                    llAddNote.setBackgroundColor(R.color.color_blue);
-                    setBackground("BLUE");
+                    setBackground(AddNote.RESULT_COLOR_BLUE);
                     break;
                 default:
-                    llAddNote.setBackgroundColor(R.color.color_white);
-                    setBackground("WHITE");
+                    setBackground(AddNote.RESULT_COLOR_WHITE);
                     break;
             }
         }
     }
 
-    public void setBackground(String color) {
+    public void setBackground(int color) {
         Intent i = getIntent();
-        i.putExtra("DATA", color);
+        Bundle b = new Bundle();
+        b.putInt("COLOR", color);
+        i.putExtra("DATA", b);
         setResult(AddNote.RESULT_COLOR, i);
         finish();
 

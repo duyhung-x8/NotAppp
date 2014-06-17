@@ -1,7 +1,9 @@
 package com.adapter;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,9 +11,12 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.note.model.Notes;
+import com.notet.activity.AddNote;
+import com.notet.activity.MainActivity;
 import com.notet.activity.R;
 
 import java.util.ArrayList;
@@ -28,6 +33,7 @@ public class NotesArrayAdapter extends ArrayAdapter<Notes> {
 
     TextView txtTitle, txtContent, txtCreatedDate;
     ImageView imgAlarm;
+   // RelativeLayout rlitem;
 
 
     public NotesArrayAdapter(Activity context, int resource, ArrayList<Notes> arrNotes) {
@@ -36,10 +42,13 @@ public class NotesArrayAdapter extends ArrayAdapter<Notes> {
         this.arrNotes = arrNotes;
         this.LayoutId = resource;
         Log.d("NotesArray Adapter", "calling contrustor..");
+
     }
 
+    @SuppressLint("ResourceAsColor")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+       // rlitem= MainActivity.rlItem;
         LayoutInflater inflater = context.getLayoutInflater();
         convertView = inflater.inflate(LayoutId, null);
 
@@ -53,10 +62,21 @@ public class NotesArrayAdapter extends ArrayAdapter<Notes> {
 
 
             Notes notes = arrNotes.get(position);
-
+            Log.d("NotesArray Adapter", "load background..."+notes.getBackground());
             txtTitle.setText(notes.getTitle());
             txtContent.setText(notes.getContent());
             txtCreatedDate.setText(notes.getCreatedDate());
+            int color=Integer.parseInt(notes.getBackground().trim());
+
+            if (color== AddNote.RESULT_COLOR_BLUE){
+                convertView.setBackgroundColor(context.getResources().getColor(R.color.color_blue));
+            }
+            else if (color== AddNote.RESULT_COLOR_YELLOW){
+                convertView.setBackgroundColor(context.getResources().getColor(R.color.color_yellow));
+
+            }else if(color== AddNote.RESULT_COLOR_GREEN){
+                convertView.setBackgroundColor(context.getResources().getColor(R.color.color_green));
+            }
 
             if (notes.getAlarm() != null) {
                 imgAlarm.setImageResource(R.drawable.ic_action_alarms);
@@ -64,6 +84,9 @@ public class NotesArrayAdapter extends ArrayAdapter<Notes> {
         }
 
         return convertView;
+
+    }
+    public  void setBackgound(int color ){
 
     }
 }

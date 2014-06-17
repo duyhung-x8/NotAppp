@@ -10,6 +10,7 @@
     <string name="action_insertphoto">Insert Photo</string>
     <string name="action_setbackground">Set Background</string>
     <string name="action_savenote">Save</string>
+    <string name="noNotes">No Notes</string>
 
     <string-array name="arrdate">
         <item>Today</item>
@@ -19,9 +20,9 @@
     </string-array>
 
     <string-array name="arrtime">
-        <item>9h</item>
-        <item>13h</item>
-        <item>20h</item>
+        <item>9:00</item>
+        <item>13:00</item>
+        <item>20:00</item>
         <item>Other...</item>
     </string-array>
 </resources>
