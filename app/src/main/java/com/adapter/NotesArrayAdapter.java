@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.note.model.Notes;
@@ -27,6 +28,7 @@ public class NotesArrayAdapter extends ArrayAdapter<Notes> {
 
     TextView txtTitle, txtContent, txtCreatedDate;
     ImageView imgAlarm;
+
 
     public NotesArrayAdapter(Activity context, int resource, ArrayList<Notes> arrNotes) {
         super(context, resource, arrNotes);
