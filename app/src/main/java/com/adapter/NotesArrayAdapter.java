@@ -33,6 +33,7 @@ public class NotesArrayAdapter extends ArrayAdapter<Notes> {
         this.context = context;
         this.arrNotes = arrNotes;
         this.LayoutId = resource;
+        Log.d("NotesArray Adapter", "calling contrustor..");
     }
 
     @Override
@@ -40,9 +41,9 @@ public class NotesArrayAdapter extends ArrayAdapter<Notes> {
         LayoutInflater inflater = context.getLayoutInflater();
         convertView = inflater.inflate(LayoutId, null);
 
-        Log.d("NotesArray Adapter","load controls...");
+        Log.d("NotesArray Adapter", "load controls...");
         if (arrNotes.size() > 0) {
-            Log.d("NotesArray Adapter","arrNotes size:"+arrNotes.size());
+            Log.d("NotesArray Adapter", "arrNotes size:" + arrNotes.size());
             txtTitle = (TextView) convertView.findViewById(R.id.txtTitleCustom);
             txtContent = (TextView) convertView.findViewById(R.id.txtContentCustom);
             txtCreatedDate = (TextView) convertView.findViewById(R.id.txtCreatedDateCustom);

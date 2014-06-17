@@ -43,16 +43,12 @@ public class MainActivity extends Activity {
     public void loadMain() {
         myDabaseHandler = new DabaseHandler(this);
         gvNotes = (GridView) findViewById(R.id.gvNote);
-        try {
             arrNote = myDabaseHandler.getAllNotes();
-            Log.d("Notes size :", arrNote.size() + "");
-            adapter = new NotesArrayAdapter(activity, R.layout.custom_item_notes, arrNote);
+            Log.d("MainActivity Notes size :", arrNote.size() + "");
+            adapter = new NotesArrayAdapter(this, R.layout.custom_item_notes, arrNote);
+            Log.d("MainActivity adapter :","load adapterErrro..");
             gvNotes.setAdapter(adapter);
 
-        }
-        catch (Exception e){
-            Log.d("Loading...db", "Error...(DB)");
-        }
     }
 
     @Override
