@@ -65,13 +65,14 @@ public class AddNote extends Activity {
 
     ArrayAdapter<String> adapterDay = null;
     ArrayAdapter<String> adapterTime = null;
-
+    String arrDate[]=null;
+    String arrTime[]=null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_note);
-        String arrDate[] = getResources().getStringArray(R.array.arrdate);
-        String arrTime[] = getResources().getStringArray(R.array.arrtime);
+        arrDate = getResources().getStringArray(R.array.arrdate);
+        arrTime = getResources().getStringArray(R.array.arrtime);
         getControls();
         try {
             adapterDay = new ArrayAdapter<String>(AddNote.this, android.R.layout.simple_spinner_item, arrDate);
@@ -112,10 +113,14 @@ public class AddNote extends Activity {
             if (i == 3) {
                 showDialog(DATE_DIALOG_ID);
                 strDay=Day+"/"+Month+"/"+Year;
+                arrDate[3]=strDay;
+
             } else {
+                arrDate[3]="Other...";
                 strDay = spDate.getSelectedItem().toString();
             }
-            spDate.setAdapter();
+            adapterDay.notifyDataSetChanged();
+           // spDate.setAdapter();
         }
 
         @Override
@@ -131,9 +136,14 @@ public class AddNote extends Activity {
             if (i == 3) {
                 showDialog(TIME_DIALOG_ID);
                 strTime=Hour+":"+Min;
+                arrTime[3]=strTime;
+
             } else {
                 strTime = spTime.getSelectedItem().toString();
+                arrTime[3]="Other...";
             }
+            adapterTime.notifyDataSetChanged();
+
         }
 
         @Override
