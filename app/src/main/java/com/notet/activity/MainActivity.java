@@ -32,7 +32,7 @@ public class MainActivity extends Activity {
     //NotesAdapter adapterNote=null;
     GridView gvNotes;
     Notes note;
-    public  static  RelativeLayout rlItem ;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +44,7 @@ public class MainActivity extends Activity {
     public void loadMain() {
 
         myDabaseHandler = new DabaseHandler(this);
-        rlItem= (RelativeLayout) findViewById(R.id.rlitem);
-        //myDabaseHandler.deleteNotes();
+//        myDabaseHandler.deleteNotes();
 
         arrNote = myDabaseHandler.getAllNotes();
 

@@ -1,9 +1,12 @@
 package com.notet.activity;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +14,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -21,9 +25,13 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
+import com.com.note.broadcastreceiver.NoteBroadcastReceiver;
 import com.note.databasehandler.DabaseHandler;
 import com.note.model.Notes;
+
+import java.util.Calendar;
 
 
 public class AddNote extends Activity {
@@ -42,9 +50,10 @@ public class AddNote extends Activity {
 
     //
     public int color;
+    public String CurrentDateTime = null;
     public String strAlarm = null;
-    public String strDay = null;
-    public String strTime = null;
+    public static String strDay = null;
+    public static String strTime = null;
 
     // db
     DabaseHandler myHandler;
@@ -53,26 +62,30 @@ public class AddNote extends Activity {
     // controls
     EditText txtTitle, txtContent;
     ImageView btnCancel;
-    TextView txtCurrentDate;
+    TextView txtCurrentDate, txtAlarm;
     Spinner spDate, spTime;
-    LinearLayout llAddNote;
+    LinearLayout llAddNote, llAlarm;
     // dialog
     static final int TIME_DIALOG_ID = 155;
     static final int DATE_DIALOG_ID = 166;
     // time and date
-    int Hour, Min, Second, Day, Month, Year;
+    static int Hour, Min, Day, Month, Year;
 
 
     ArrayAdapter<String> adapterDay = null;
     ArrayAdapter<String> adapterTime = null;
-    String arrDate[]=null;
-    String arrTime[]=null;
+    String arrDate[] = null;
+    String arrTime[] = null;
+
+    Calendar c = Calendar.getInstance();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_note);
         arrDate = getResources().getStringArray(R.array.arrdate);
         arrTime = getResources().getStringArray(R.array.arrtime);
+
         getControls();
         try {
             adapterDay = new ArrayAdapter<String>(AddNote.this, android.R.layout.simple_spinner_item, arrDate);
@@ -95,32 +108,63 @@ public class AddNote extends Activity {
     }
 
     public void getControls() {
+
         spDate = (Spinner) findViewById(R.id.spDate);
         spTime = (Spinner) findViewById(R.id.spTime);
         txtContent = (EditText) findViewById(R.id.txtAddContent);
         txtTitle = (EditText) findViewById(R.id.txtAddTitle);
-//        txtCurrentDate = (TextView) findViewById(R.id.txtCreatedDate);
+        txtAlarm = (TextView) findViewById(R.id.txtAlarm);
+        txtCurrentDate = (TextView) findViewById(R.id.txtCreatedDate);
         btnCancel = (ImageView) findViewById(R.id.btnCancel);
         llAddNote = (LinearLayout) findViewById(R.id.llAddNote);
+        llAlarm= (LinearLayout) findViewById(R.id.llAlarm);
 
+        //
+        c = Calendar.getInstance();
+        CurrentDateTime = c.get(Calendar.DAY_OF_MONTH) + "/" + c.get(Calendar.MONTH) + "/" + c.get(Calendar.YEAR)
+                + c.get(Calendar.HOUR) + ":" + c.get(Calendar.MINUTE);
+        txtCurrentDate.setText(CurrentDateTime);
 
+        txtAlarm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                llAlarm.setVisibility(View.VISIBLE);
+                Log.d("Visible linnear layout","visible");
+                txtAlarm.setVisibility(View.GONE);
+            }
+        });
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                llAlarm.setVisibility(LinearLayout.INVISIBLE);
+                txtAlarm.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     private class myOnItemClickListener implements OnItemSelectedListener {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
-            if (i == 3) {
-                showDialog(DATE_DIALOG_ID);
-                strDay=Day+"/"+Month+"/"+Year;
-                arrDate[3]=strDay;
-
-            } else {
-                arrDate[3]="Other...";
-                strDay = spDate.getSelectedItem().toString();
+            switch (i) {
+                case 0:
+                    strDay = setDate(0);
+                    Toast.makeText(getBaseContext(), strDay, Toast.LENGTH_LONG).show();
+                    break;
+                case 1:
+                    strDay = setDate(1);
+                    break;
+                case 2:
+                    strDay = setDate(2);
+                    break;
+                case 3:
+                    showDialog(DATE_DIALOG_ID);
+                    strDay = Day + "/" + Month + "/" + Year;
+                    arrDate[3] = strDay;
+                    break;
             }
             adapterDay.notifyDataSetChanged();
-           // spDate.setAdapter();
+            // spDate.setAdapter();
         }
 
         @Override
@@ -129,21 +173,29 @@ public class AddNote extends Activity {
         }
     }
 
+    public String setDate(int i) {
+        c.add(Calendar.DATE, i);
+        Day = c.get(Calendar.DAY_OF_MONTH);
+        Month = c.get(Calendar.MONTH);
+        Year = c.get(Calendar.YEAR);
+
+        return Day + "/" + Month + "/" + Year;
+    }
+
     private class myOnItemClickListener2 implements OnItemSelectedListener {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
             if (i == 3) {
                 showDialog(TIME_DIALOG_ID);
-                strTime=Hour+":"+Min;
-                arrTime[3]=strTime;
+                strTime = Hour + ":" + Min;
+                arrTime[3] = strTime;
 
             } else {
                 strTime = spTime.getSelectedItem().toString();
-                arrTime[3]="Other...";
+                arrTime[3] = "Other...";
             }
             adapterTime.notifyDataSetChanged();
-
         }
 
         @Override
@@ -195,25 +247,49 @@ public class AddNote extends Activity {
     }
 
     public void SaveNote() {
+
+
         myHandler = new DabaseHandler(this);
+        int id = myHandler.idMax() + 1;
         strAlarm = strDay + " " + strTime;
+
         notes = new Notes();
+
+        notes.setId(id);
         notes.setTitle(txtTitle.getText() + "");
         notes.setContent(txtContent.getText() + "");
-        // notes.setCreatedDate(txtCurrentDate.getText() + "");
-        notes.setCreatedDate("16/06/2014");
+        notes.setCreatedDate(txtCurrentDate.getText() + "");
         notes.setBackground(color + "");
         notes.setAlarm(strAlarm);
         try {
             myHandler.addNote(notes);
             myHandler.close();
             finish();
-            Log.d("AddNote", "Call back to MainActivity class");
+            Log.d("AddNote", "Add note success.." + strAlarm);
+            Log.d("AddNote", "get id note.." + notes.getId());
+
+            if (notes.getAlarm() != null)
+                startAlert(id);
         } catch (Exception e) {
             Log.d("AddNote", "Add new a note errorr..." + e.toString());
         }
     }
 
+    public void startAlert(int id) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, Year);
+        calendar.set(Calendar.MONTH, Month);
+        calendar.set(Calendar.YEAR, Day);
+        calendar.set(Calendar.HOUR, Hour);
+        calendar.set(Calendar.MINUTE, Min);
+
+        Intent intent = new Intent(this, NoteBroadcastReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getBaseContext(), id, intent, 0);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+        Toast.makeText(this, "ALarm set in " + calendar.toString(), Toast.LENGTH_LONG).show();
+
+    }
 
     @SuppressLint("ResourceAsColor")
     @Override
@@ -254,14 +330,12 @@ public class AddNote extends Activity {
     protected Dialog onCreateDialog(int id) {
         switch (id) {
             case TIME_DIALOG_ID:
-               return new TimePickerDialog(this, timePickerListener, Hour, Min, false);
+                return new TimePickerDialog(this, timePickerListener, Hour, Min, false);
 
             case DATE_DIALOG_ID:
                 return new DatePickerDialog(this, datePickerListener, Year, Month, Day);
-
             default:
                 break;
-
         }
         return null;
     }
@@ -269,17 +343,17 @@ public class AddNote extends Activity {
     private TimePickerDialog.OnTimeSetListener timePickerListener = new TimePickerDialog.OnTimeSetListener() {
         @Override
         public void onTimeSet(TimePicker timePicker, int hourOfDay, int minutes) {
-                Hour=hourOfDay;
-            Min=minutes;
+            Hour = hourOfDay;
+            Min = minutes;
 
         }
     };
     private DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-            Year=year;
-            Month=month;
-            Day=day;
+            Year = year;
+            Month = month;
+            Day = day;
         }
     };
 }

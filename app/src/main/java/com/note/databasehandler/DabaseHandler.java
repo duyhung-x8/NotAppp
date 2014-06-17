@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.note.model.Notes;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class DabaseHandler extends SQLiteOpenHelper {
     // db version
     public static final int DATABASE_VERSION = 1;
     // db name
-    public static final String DATABASE_NAME = "NoteDB";
+    public static final String DATABASE_NAME = "NoteDBDB";
     //tbl name
     public static final String TABLE_NOTES = "Notes";
 
@@ -38,7 +39,7 @@ public class DabaseHandler extends SQLiteOpenHelper {
 
     // string query create table notes
     public static final String CREATE_TABLE_NOTES = "CREATE TABLE " + TABLE_NOTES + "("
-            + KEY_ID + " INT IDENTITY(0,1) PRIMARY KEY,"
+            + KEY_ID + " INT PRIMARY KEY,"
             + KEY_TITLE + " TEXT,"
             + KEY_CONTENT + " TEXT,"
             + KEY_CREATED_DATE + " TEXT,"
@@ -64,6 +65,7 @@ public class DabaseHandler extends SQLiteOpenHelper {
     public void addNote(Notes note) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
+        values.put(KEY_ID,note.getId());
         values.put(KEY_TITLE, note.getTitle());
         values.put(KEY_CONTENT, note.getContent());
         values.put(KEY_CREATED_DATE, note.getCreatedDate());
@@ -135,7 +137,15 @@ public class DabaseHandler extends SQLiteOpenHelper {
         cursor.close();
         return cursor.getCount();
     }
-
+    public int idMax(){
+        int id=0;
+        ArrayList<Notes> arrayList=getAllNotes();
+        for(int i=0;i<arrayList.size()-1;i++) {
+            if (id < arrayList.get(i).getId())
+                id = arrayList.get(i).getId();
+        }
+        return  id;
+    }
     public int updateNotes(Notes notes) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();

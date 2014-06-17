@@ -63,6 +63,7 @@ public class NotesArrayAdapter extends ArrayAdapter<Notes> {
 
             Notes notes = arrNotes.get(position);
             Log.d("NotesArray Adapter", "load background..."+notes.getBackground());
+            Log.d("NotesArray Adapter", "load alarm..."+notes.getAlarm());
             txtTitle.setText(notes.getTitle());
             txtContent.setText(notes.getContent());
             txtCreatedDate.setText(notes.getCreatedDate());
@@ -79,7 +80,9 @@ public class NotesArrayAdapter extends ArrayAdapter<Notes> {
             }
 
             if (notes.getAlarm() != null) {
-                imgAlarm.setImageResource(R.drawable.ic_action_alarms);
+                Log.d("Notes arr adapter","load img...");
+
+                imgAlarm.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_action_alarms2));
             }
         }
 
