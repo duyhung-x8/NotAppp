@@ -46,9 +46,10 @@ public class MainActivity extends Activity {
         myDabaseHandler = new DabaseHandler(this);
 
 
-        myDabaseHandler.deleteNotes();
+        //myDabaseHandler.deleteNotes();
 
-        arrNote = myDabaseHandler.getAllNotes();
+        //arrNote = myDabaseHandler.getAllNotes();
+        arrNote = myDabaseHandler.getAllNotesDESC();
 
         if (arrNote.size() > 0) {
             setContentView(R.layout.activity_main);

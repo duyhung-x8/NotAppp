@@ -49,11 +49,11 @@ public class AddNote extends Activity {
     public static final int RESULT_COLOR_BLUE = 203;
 
     //
-    public int color;
-    public String CurrentDateTime = null;
-    public String strAlarm = null;
-    public static String strDay = null;
-    public static String strTime = null;
+    int color;
+    String CurrentDateTime = null;
+    String strAlarm = null;
+    static String strDay = null;
+    static String strTime = null;
 
     // db
     DabaseHandler myHandler;
@@ -117,7 +117,7 @@ public class AddNote extends Activity {
         txtCurrentDate = (TextView) findViewById(R.id.txtCreatedDate);
         btnCancel = (ImageView) findViewById(R.id.btnCancel);
         llAddNote = (LinearLayout) findViewById(R.id.llAddNote);
-        llAlarm= (LinearLayout) findViewById(R.id.llAlarm);
+        llAlarm = (LinearLayout) findViewById(R.id.llAlarm);
 
         //
         c = Calendar.getInstance();
@@ -128,10 +128,8 @@ public class AddNote extends Activity {
         txtAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
                 llAlarm.setVisibility(View.VISIBLE);
-                Log.d("Visible linnear layout","visible");
+                Log.d("Visible linnear layout", "visible");
                 txtAlarm.setVisibility(View.GONE);
             }
         });
@@ -140,9 +138,9 @@ public class AddNote extends Activity {
             public void onClick(View view) {
                 llAlarm.setVisibility(LinearLayout.INVISIBLE);
                 txtAlarm.setVisibility(View.VISIBLE);
-                strTime="";
-                strDay="";
-                strAlarm="";
+                strTime = "";
+                strDay = "";
+                strAlarm = "";
             }
         });
     }
@@ -153,7 +151,6 @@ public class AddNote extends Activity {
             switch (i) {
                 case 0:
                     strDay = setDate(0);
-                    Toast.makeText(getBaseContext(), strDay, Toast.LENGTH_LONG).show();
                     break;
                 case 1:
                     strDay = setDate(1);
@@ -165,6 +162,9 @@ public class AddNote extends Activity {
                     showDialog(DATE_DIALOG_ID);
                     strDay = Day + "/" + Month + "/" + Year;
                     arrDate[3] = strDay;
+                    break;
+                default:
+                    strDay = "";
                     break;
             }
             adapterDay.notifyDataSetChanged();
@@ -189,16 +189,24 @@ public class AddNote extends Activity {
     private class myOnItemClickListener2 implements OnItemSelectedListener {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
-            if (i == 3) {
-                showDialog(TIME_DIALOG_ID);
-                strTime = Hour + ":" + Min;
-                arrTime[3] = strTime;
-
-            } else {
-                strTime = spTime.getSelectedItem().toString();
-                arrTime[3] = "Other...";
+            switch (i) {
+                case 0:
+                case 1:
+                case 2:
+                    strTime = spTime.getSelectedItem().toString();
+                    break;
+                default:
+                    strTime = "";
+                    break;
             }
+//            if (i == 3) {
+//                showDialog(TIME_DIALOG_ID);
+//                strTime = Hour + ":" + Min;
+//                arrTime[3] = strTime;
+//
+//            } else {
+//                arrTime[3] = "Other...";
+//            }
             adapterTime.notifyDataSetChanged();
         }
 
@@ -255,10 +263,9 @@ public class AddNote extends Activity {
 
         myHandler = new DabaseHandler(this);
         int id = myHandler.idMax() + 1;
-        strAlarm = strDay + " " + strTime;
+        strAlarm = strDay + strTime;
 
         notes = new Notes();
-
 
         notes.setTitle(txtTitle.getText() + "");
         notes.setContent(txtContent.getText() + "");
@@ -269,20 +276,27 @@ public class AddNote extends Activity {
         try {
             myHandler.addNote(notes);
             myHandler.close();
-            finish();
+
             Log.d("AddNote", "Add note success.." + strAlarm);
 
         } catch (Exception e) {
             Log.d("AddNote", "Add new a note errorr..." + e.toString());
         }
 
-        if (strAlarm!= null) {
+        if (strTime.equals("") && strDay.equals("")) {
+            Log.d("AddNote", "nndndnnn" + strDay);
+            Log.d("AddNote", "nndndnnn" + strTime);
+            finish();
 
-            startAlert(id);
+        } else {
+            startAlert(id, strAlarm);
+            finish();
         }
+
+
     }
 
-    public void startAlert(int id) {
+    public void startAlert(int id, String strAlarm) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.YEAR, Year);
         calendar.set(Calendar.MONTH, Month);
@@ -294,7 +308,7 @@ public class AddNote extends Activity {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getBaseContext(), id, intent, 0);
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-        Toast.makeText(this, "ALarm set in " + calendar.toString(), Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "ALarm set in " + strAlarm, Toast.LENGTH_LONG).show();
 
     }
 

@@ -58,7 +58,7 @@ public class NotesArrayAdapter extends ArrayAdapter<Notes> {
             txtTitle = (TextView) convertView.findViewById(R.id.txtTitleCustom);
             txtContent = (TextView) convertView.findViewById(R.id.txtContentCustom);
             txtCreatedDate = (TextView) convertView.findViewById(R.id.txtCreatedDateCustom);
-            imgAlarm = (ImageView) convertView.findViewById(R.id.imgAlarmCustom);
+           // imgAlarm = (ImageView) convertView.findViewById(R.id.imgAlarmCustom);
 
 
             Notes notes = arrNotes.get(position);
@@ -78,12 +78,11 @@ public class NotesArrayAdapter extends ArrayAdapter<Notes> {
             }else if(color== AddNote.RESULT_COLOR_GREEN){
                 convertView.setBackgroundColor(context.getResources().getColor(R.color.color_green));
             }
-
-            if (notes.getAlarm() != null) {
-                Log.d("Notes arr adapter","load img...");
-
-                imgAlarm.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_action_alarms2));
-            }
+            //.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_action_alarms2));
+//            if (notes.getAlarm() != null) {
+//                Log.d("Notes arr adapter","load img...");
+//                imgAlarm.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_action_alarms2));
+//            }
         }
 
         return convertView;

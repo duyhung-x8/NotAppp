@@ -134,6 +134,33 @@ public class DabaseHandler extends SQLiteOpenHelper {
 
         return arrNotes;
     }
+    public ArrayList<Notes> getAllNotesDESC() {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        ArrayList<Notes> arrNotes = new ArrayList<Notes>();
+        String selectQuery = "SELECT * FROM " + TABLE_NOTES;
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        Log.d("Get all nots", "Note size :" + cursor.getCount());
+        if (cursor.moveToLast()) {
+            Log.d("GetAll NOTEdddddddddddddd", "MoveToFirst");
+            do {
+                Notes notes = new Notes();
+                //notes.setId(Integer.parseInt(cursor.getString(0)));
+                notes.setTitle(cursor.getString(1));
+                notes.setContent(cursor.getString(2));
+                notes.setCreatedDate(cursor.getString(3));
+                notes.setAlarm(cursor.getString(4));
+                notes.setBackground(cursor.getString(5));
+
+                arrNotes.add(notes);
+
+                Log.d("GetAll NOTEdddddddddddddd", notes.toString());
+            } while (cursor.moveToPrevious());
+        }
+
+
+        return arrNotes;
+    }
 
     // count note
     public int countNotes() {
