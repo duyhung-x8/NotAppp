@@ -39,7 +39,7 @@ public class DabaseHandler extends SQLiteOpenHelper {
 
     // string query create table notes
     public static final String CREATE_TABLE_NOTES = "CREATE TABLE " + TABLE_NOTES + "("
-            + KEY_ID + " INT IDENTITY(0,1) PRIMARY KEY,"
+            + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
             + KEY_TITLE + " TEXT,"
             + KEY_CONTENT + " TEXT,"
             + KEY_CREATED_DATE + " TEXT,"
@@ -51,7 +51,6 @@ public class DabaseHandler extends SQLiteOpenHelper {
     }
 
     public DabaseHandler(Context context) {
-
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -62,15 +61,25 @@ public class DabaseHandler extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i2) {
-        sqLiteDatabase.execSQL("DROP IF EXITS " + TABLE_NOTES);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTES);
         onCreate(sqLiteDatabase);
     }
+    public void CreateTable(){
+        SQLiteDatabase db= getWritableDatabase();
+        onCreate(db);
+        Log.d("Create table ",TABLE_NOTES);
 
+    }
+    public void dropTable(){
+        SQLiteDatabase db= this.getWritableDatabase();
+        db.execSQL("DROP TABLE IF EXISTS "+TABLE_NOTES);
+        onCreate(db);
+        Log.d("drop table ",TABLE_NOTES);
+    }
     // CRUD (create,read,update,delete)
     public void addNote(Notes note) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-
 
         values.put(KEY_TITLE, note.getTitle());
         values.put(KEY_CONTENT, note.getContent());
@@ -173,11 +182,12 @@ public class DabaseHandler extends SQLiteOpenHelper {
     public int idMax(){
         int id=0;
         ArrayList<Notes> arrayList=getAllNotes();
+        Notes notes=new Notes();
         for(int i=0;i<arrayList.size()-1;i++) {
-            if (id < arrayList.get(i).getId())
-                id = arrayList.get(i).getId();
+            notes=arrayList.get(i);
+            Log.d("Id maxxx:",""+notes.getId());
         }
-        Log.d("Id max:",""+id);
+       // Log.d("Id max:",""+id);
         return  id;
     }
     public int updateNotes(Notes notes) {

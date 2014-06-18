@@ -50,10 +50,11 @@ public class AddNote extends Activity {
 
     //
     int color;
-    String CurrentDateTime = null;
-    String strAlarm = null;
-    static String strDay = null;
-    static String strTime = null;
+    String CurrentDateTime = "";
+    String strAlarm = "";
+    static String strDay = "";
+    static String strTime = "";
+
 
     // db
     DabaseHandler myHandler;
@@ -85,8 +86,12 @@ public class AddNote extends Activity {
         setContentView(R.layout.activity_add_note);
         arrDate = getResources().getStringArray(R.array.arrdate);
         arrTime = getResources().getStringArray(R.array.arrtime);
-
         getControls();
+        myHandler = new DabaseHandler(this);
+        int id = myHandler.idMax() + 1;
+    }
+
+    public void spinerDropDown() {
         try {
             adapterDay = new ArrayAdapter<String>(AddNote.this, android.R.layout.simple_spinner_item, arrDate);
             adapterTime = new ArrayAdapter<String>(AddNote.this, android.R.layout.simple_spinner_item, arrTime);
@@ -101,10 +106,8 @@ public class AddNote extends Activity {
             spTime.setOnItemSelectedListener(new myOnItemClickListener2());
 
         } catch (Exception e) {
-            Log.d("AddNote", "Load arrString Error...");
+            Log.d("AddNote", "Load data for spinner Error...");
         }
-
-
     }
 
     public void getControls() {
@@ -118,6 +121,7 @@ public class AddNote extends Activity {
         btnCancel = (ImageView) findViewById(R.id.btnCancel);
         llAddNote = (LinearLayout) findViewById(R.id.llAddNote);
         llAlarm = (LinearLayout) findViewById(R.id.llAlarm);
+        llAlarm.setEnabled(false);
 
         //
         c = Calendar.getInstance();
@@ -128,8 +132,10 @@ public class AddNote extends Activity {
         txtAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                llAlarm.setEnabled(true);
                 llAlarm.setVisibility(View.VISIBLE);
                 Log.d("Visible linnear layout", "visible");
+                spinerDropDown();
                 txtAlarm.setVisibility(View.GONE);
             }
         });
@@ -137,6 +143,7 @@ public class AddNote extends Activity {
             @Override
             public void onClick(View view) {
                 llAlarm.setVisibility(LinearLayout.INVISIBLE);
+                llAlarm.setEnabled(false);
                 txtAlarm.setVisibility(View.VISIBLE);
                 strTime = "";
                 strDay = "";
@@ -168,7 +175,7 @@ public class AddNote extends Activity {
                     break;
             }
             adapterDay.notifyDataSetChanged();
-            // spDate.setAdapter();
+            Log.d("adapterday ", strDay);
         }
 
         @Override
@@ -199,15 +206,8 @@ public class AddNote extends Activity {
                     strTime = "";
                     break;
             }
-//            if (i == 3) {
-//                showDialog(TIME_DIALOG_ID);
-//                strTime = Hour + ":" + Min;
-//                arrTime[3] = strTime;
-//
-//            } else {
-//                arrTime[3] = "Other...";
-//            }
             adapterTime.notifyDataSetChanged();
+            Log.d("adapterday ", strTime);
         }
 
         @Override
@@ -260,15 +260,31 @@ public class AddNote extends Activity {
 
     public void SaveNote() {
 
+        strAlarm = strDay.toString() + strTime.toString();
+        Log.d("AddNote", "nndndnnn" + strDay.toString());
+        Log.d("AddNote", "nndndnnn" + strTime.toString());
 
+        if (txtTitle.getText().toString().equals("") && txtContent.getText().toString().equals("") && strAlarm.toString().equals("")) {
+            Log.d("dddddddddddd", "ddffffffdfdfdf");
+            finish();
+
+        } else if (txtTitle.getText().toString().equals("") && txtContent.getText().toString().equals("") && !strAlarm.toString().equals("")) {
+            txtTitle.setText("Untitle");
+            addNote();
+        } else if (txtTitle.getText().toString().equals("") && (!txtContent.getText().toString().equals(""))) {
+            txtTitle.setText(txtContent.getText());
+            addNote();
+        }
+    }
+
+    public void addNote() {
         myHandler = new DabaseHandler(this);
         int id = myHandler.idMax() + 1;
-        strAlarm = strDay + strTime;
 
         notes = new Notes();
-
         notes.setTitle(txtTitle.getText() + "");
         notes.setContent(txtContent.getText() + "");
+        Log.d("AddNote Created date", txtCurrentDate.getText() + "");
         notes.setCreatedDate(txtCurrentDate.getText() + "");
         notes.setBackground(color + "");
         notes.setAlarm(strAlarm);
@@ -276,24 +292,22 @@ public class AddNote extends Activity {
         try {
             myHandler.addNote(notes);
             myHandler.close();
-
             Log.d("AddNote", "Add note success.." + strAlarm);
-
+            finish();
         } catch (Exception e) {
             Log.d("AddNote", "Add new a note errorr..." + e.toString());
         }
 
-        if (strTime.equals("") && strDay.equals("")) {
-            Log.d("AddNote", "nndndnnn" + strDay);
-            Log.d("AddNote", "nndndnnn" + strTime);
-            finish();
+        if (strAlarm != "") {
+            Log.d("AddNote", "Add note strAlarm.." + strAlarm);
+            startAlert(id, strAlarm);
+
 
         } else {
-            startAlert(id, strAlarm);
-            finish();
+            Log.d("AddNote", "nndndnnn" + strDay);
+            Log.d("AddNote", "nndndnnn" + strTime);
+
         }
-
-
     }
 
     public void startAlert(int id, String strAlarm) {
@@ -322,7 +336,6 @@ public class AddNote extends Activity {
             Bundle b = data.getBundleExtra("DATA");
             color = b.getInt("COLOR");
             Log.d("Add note", "Background " + color);
-
             switch (color) {
                 case RESULT_COLOR_WHITE:
                     llAddNote.setBackgroundColor(arrColor[0]);

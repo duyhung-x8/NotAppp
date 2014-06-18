@@ -44,13 +44,10 @@ public class MainActivity extends Activity {
     public void loadMain() {
 
         myDabaseHandler = new DabaseHandler(this);
-
-
+        //myDabaseHandler.CreateTable();
         //myDabaseHandler.deleteNotes();
-
         //arrNote = myDabaseHandler.getAllNotes();
         arrNote = myDabaseHandler.getAllNotesDESC();
-
         if (arrNote.size() > 0) {
             setContentView(R.layout.activity_main);
             gvNotes = (GridView) findViewById(R.id.gvNote);
@@ -68,12 +65,10 @@ public class MainActivity extends Activity {
         super.onResume();
         loadMain();
         Log.d("MainActivity", "Call event OnResume()");
-
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;

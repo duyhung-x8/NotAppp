@@ -33,7 +33,7 @@ public class NotesArrayAdapter extends ArrayAdapter<Notes> {
 
     TextView txtTitle, txtContent, txtCreatedDate;
     ImageView imgAlarm;
-   // RelativeLayout rlitem;
+    // RelativeLayout rlitem;
 
 
     public NotesArrayAdapter(Activity context, int resource, ArrayList<Notes> arrNotes) {
@@ -48,7 +48,7 @@ public class NotesArrayAdapter extends ArrayAdapter<Notes> {
     @SuppressLint("ResourceAsColor")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-       // rlitem= MainActivity.rlItem;
+        // rlitem= MainActivity.rlItem;
         LayoutInflater inflater = context.getLayoutInflater();
         convertView = inflater.inflate(LayoutId, null);
 
@@ -58,37 +58,40 @@ public class NotesArrayAdapter extends ArrayAdapter<Notes> {
             txtTitle = (TextView) convertView.findViewById(R.id.txtTitleCustom);
             txtContent = (TextView) convertView.findViewById(R.id.txtContentCustom);
             txtCreatedDate = (TextView) convertView.findViewById(R.id.txtCreatedDateCustom);
-           // imgAlarm = (ImageView) convertView.findViewById(R.id.imgAlarmCustom);
+            imgAlarm = (ImageView) convertView.findViewById(R.id.imgAlarmCustom);
 
 
             Notes notes = arrNotes.get(position);
-            Log.d("NotesArray Adapter", "load background..."+notes.getBackground());
-            Log.d("NotesArray Adapter", "load alarm..."+notes.getAlarm());
+            Log.d("NotesArray Adapter", "load background..." + notes.getBackground());
+            Log.d("NotesArray Adapter", "load alarm..." + notes.getAlarm());
+            Log.d("NotesArray Adapter", "load id..." + notes.getId());
             txtTitle.setText(notes.getTitle());
             txtContent.setText(notes.getContent());
             txtCreatedDate.setText(notes.getCreatedDate());
-            int color=Integer.parseInt(notes.getBackground().trim());
+            int color = Integer.parseInt(notes.getBackground().trim());
 
-            if (color== AddNote.RESULT_COLOR_BLUE){
+            if (color == AddNote.RESULT_COLOR_BLUE) {
                 convertView.setBackgroundColor(context.getResources().getColor(R.color.color_blue));
-            }
-            else if (color== AddNote.RESULT_COLOR_YELLOW){
+            } else if (color == AddNote.RESULT_COLOR_YELLOW) {
                 convertView.setBackgroundColor(context.getResources().getColor(R.color.color_yellow));
 
-            }else if(color== AddNote.RESULT_COLOR_GREEN){
+            } else if (color == AddNote.RESULT_COLOR_GREEN) {
                 convertView.setBackgroundColor(context.getResources().getColor(R.color.color_green));
             }
             //.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_action_alarms2));
-//            if (notes.getAlarm() != null) {
-//                Log.d("Notes arr adapter","load img...");
-//                imgAlarm.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_action_alarms2));
-//            }
+
+            if (!notes.getAlarm().equals("")) {
+                Log.d("Notes arr adapter", "load img..." + notes.getAlarm());
+                imgAlarm.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_action_alarms));
+                // imgAlarm.setImageResource(R.drawable.ic_action_alarms);
+            }
         }
 
         return convertView;
 
     }
-    public  void setBackgound(int color ){
+
+    public void setBackgound(int color) {
 
     }
 }
