@@ -129,6 +129,7 @@ public class AddNote extends Activity {
             @Override
             public void onClick(View view) {
 
+
                 llAlarm.setVisibility(View.VISIBLE);
                 Log.d("Visible linnear layout","visible");
                 txtAlarm.setVisibility(View.GONE);
@@ -139,6 +140,9 @@ public class AddNote extends Activity {
             public void onClick(View view) {
                 llAlarm.setVisibility(LinearLayout.INVISIBLE);
                 txtAlarm.setVisibility(View.VISIBLE);
+                strTime="";
+                strDay="";
+                strAlarm="";
             }
         });
     }
@@ -255,23 +259,26 @@ public class AddNote extends Activity {
 
         notes = new Notes();
 
-        notes.setId(id);
+
         notes.setTitle(txtTitle.getText() + "");
         notes.setContent(txtContent.getText() + "");
         notes.setCreatedDate(txtCurrentDate.getText() + "");
         notes.setBackground(color + "");
         notes.setAlarm(strAlarm);
+
         try {
             myHandler.addNote(notes);
             myHandler.close();
             finish();
             Log.d("AddNote", "Add note success.." + strAlarm);
-            Log.d("AddNote", "get id note.." + notes.getId());
 
-            if (notes.getAlarm() != null)
-                startAlert(id);
         } catch (Exception e) {
             Log.d("AddNote", "Add new a note errorr..." + e.toString());
+        }
+
+        if (strAlarm!= null) {
+
+            startAlert(id);
         }
     }
 

@@ -44,7 +44,9 @@ public class MainActivity extends Activity {
     public void loadMain() {
 
         myDabaseHandler = new DabaseHandler(this);
-//        myDabaseHandler.deleteNotes();
+
+
+        myDabaseHandler.deleteNotes();
 
         arrNote = myDabaseHandler.getAllNotes();
 

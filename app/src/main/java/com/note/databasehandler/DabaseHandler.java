@@ -25,7 +25,7 @@ public class DabaseHandler extends SQLiteOpenHelper {
     // db version
     public static final int DATABASE_VERSION = 1;
     // db name
-    public static final String DATABASE_NAME = "NoteDBDB";
+    public static final String DATABASE_NAME = "NoteDB";
     //tbl name
     public static final String TABLE_NOTES = "Notes";
 
@@ -39,14 +39,19 @@ public class DabaseHandler extends SQLiteOpenHelper {
 
     // string query create table notes
     public static final String CREATE_TABLE_NOTES = "CREATE TABLE " + TABLE_NOTES + "("
-            + KEY_ID + " INT PRIMARY KEY,"
+            + KEY_ID + " INT IDENTITY(0,1) PRIMARY KEY,"
             + KEY_TITLE + " TEXT,"
             + KEY_CONTENT + " TEXT,"
             + KEY_CREATED_DATE + " TEXT,"
             + KEY_ALARM + " TEXT,"
             + KEY_BACGROUND + " TEXT" + ")";
 
+    public void delDB(Context context){
+        context.deleteDatabase(DATABASE_NAME);
+    }
+
     public DabaseHandler(Context context) {
+
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -65,7 +70,8 @@ public class DabaseHandler extends SQLiteOpenHelper {
     public void addNote(Notes note) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(KEY_ID,note.getId());
+
+
         values.put(KEY_TITLE, note.getTitle());
         values.put(KEY_CONTENT, note.getContent());
         values.put(KEY_CREATED_DATE, note.getCreatedDate());
@@ -144,6 +150,7 @@ public class DabaseHandler extends SQLiteOpenHelper {
             if (id < arrayList.get(i).getId())
                 id = arrayList.get(i).getId();
         }
+        Log.d("Id max:",""+id);
         return  id;
     }
     public int updateNotes(Notes notes) {
