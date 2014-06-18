@@ -1,8 +1,13 @@
 package com.notet.activity;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -37,16 +42,16 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_main);
+        BitmapDrawable background=new BitmapDrawable(BitmapFactory.decodeResource(getResources(), R.drawable.bg_actionbar));
+        //actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3399FF")));
+        ActionBar actionBar = getActionBar();
+        actionBar.setBackgroundDrawable(background);// set background for action bar
+
         loadMain();
     }
-
+    // laoding data (use when call onCreate and onResume)
     public void loadMain() {
-
         myDabaseHandler = new DabaseHandler(this);
-        //myDabaseHandler.CreateTable();
-        //myDabaseHandler.deleteNotes();
-        //arrNote = myDabaseHandler.getAllNotes();
         arrNote = myDabaseHandler.getAllNotesDESC();
         if (arrNote.size() > 0) {
             setContentView(R.layout.activity_main);

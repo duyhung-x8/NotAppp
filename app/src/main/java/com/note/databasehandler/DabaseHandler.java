@@ -15,7 +15,8 @@ import java.util.List;
 
 /**
  * Created by DUYHUNG on 16-06-2014.
- * class use handler model and cread db for app
+ * class use to handle model and create db for app
+ *  create CRUD
  */
 public class DabaseHandler extends SQLiteOpenHelper {
 
@@ -179,6 +180,7 @@ public class DabaseHandler extends SQLiteOpenHelper {
         cursor.close();
         return cursor.getCount();
     }
+    // get id notes max
     public int idMax(){
         int id=0;
         ArrayList<Notes> arrayList=getAllNotes();
@@ -204,13 +206,14 @@ public class DabaseHandler extends SQLiteOpenHelper {
         Log.d("UPDATE NOTE", notes.toString());
         return i;
     }
-
+    // delete note selected
     public void deleteNotes(Notes notes) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_NOTES, KEY_ID + "=?", new String[]{String.valueOf(notes.getId())});
         db.close();
         Log.d("DELETE NOTE", notes.toString());
     }
+    // del table notes if need
     public void deleteNotes() {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM "+TABLE_NOTES);

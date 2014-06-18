@@ -9,6 +9,10 @@ import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -38,52 +42,54 @@ public class AddNote extends Activity {
 
     // request and result code
     public static final int REQUEST_CODE_ADD_NOTE = 111;
-
     public static final int RESULT_COLOR = 113;
     public static final int RESULT_PHOTO = 115;
-
-    // my color
+    //  color use to setbackground for this and Notes
     public static final int RESULT_COLOR_WHITE = 200;
     public static final int RESULT_COLOR_YELLOW = 201;
     public static final int RESULT_COLOR_GREEN = 202;
     public static final int RESULT_COLOR_BLUE = 203;
+    // db
+    DabaseHandler myHandler;
+    Notes notes;
+    // all controls
+    EditText txtTitle, txtContent;
+    ImageView btnCancel;
+    TextView txtCurrentDate, txtAlarm;
+    Spinner spDate, spTime;
+    LinearLayout llAddNote, llAlarm;
 
-    //
+    // dialog
+    static final int TIME_DIALOG_ID = 155;
+    static final int DATE_DIALOG_ID = 166;
+    // time and date
+
+
+    // arr and adapter for spiner
+    ArrayAdapter<String> adapterDay = null;
+    ArrayAdapter<String> adapterTime = null;
+    String arrDate[] = null;
+    String arrTime[] = null;
+
+    // time
+    Calendar c = Calendar.getInstance();
+    static int Hour, Min, Day, Month, Year;
     int color;
     String CurrentDateTime = "";
     String strAlarm = "";
     static String strDay = "";
     static String strTime = "";
 
-
-    // db
-    DabaseHandler myHandler;
-    Notes notes;
-
-    // controls
-    EditText txtTitle, txtContent;
-    ImageView btnCancel;
-    TextView txtCurrentDate, txtAlarm;
-    Spinner spDate, spTime;
-    LinearLayout llAddNote, llAlarm;
-    // dialog
-    static final int TIME_DIALOG_ID = 155;
-    static final int DATE_DIALOG_ID = 166;
-    // time and date
-    static int Hour, Min, Day, Month, Year;
-
-
-    ArrayAdapter<String> adapterDay = null;
-    ArrayAdapter<String> adapterTime = null;
-    String arrDate[] = null;
-    String arrTime[] = null;
-
-    Calendar c = Calendar.getInstance();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_note);
+        BitmapDrawable background=new BitmapDrawable(BitmapFactory.decodeResource(getResources(),R.drawable.bg_actionbar));
+
+        ActionBar actionBar = getActionBar();
+        //actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3399FF")));
+        actionBar.setBackgroundDrawable(background);
+
         arrDate = getResources().getStringArray(R.array.arrdate);
         arrTime = getResources().getStringArray(R.array.arrtime);
         getControls();
@@ -91,6 +97,49 @@ public class AddNote extends Activity {
         int id = myHandler.idMax() + 1;
     }
 
+    public void getControls() {
+
+        spDate = (Spinner) findViewById(R.id.spDate);
+        spTime = (Spinner) findViewById(R.id.spTime);
+        txtContent = (EditText) findViewById(R.id.txtAddContent);
+        txtTitle = (EditText) findViewById(R.id.txtAddTitle);
+        txtAlarm = (TextView) findViewById(R.id.txtAlarm);
+        txtCurrentDate = (TextView) findViewById(R.id.txtCreatedDate);
+        btnCancel = (ImageView) findViewById(R.id.btnCancel);
+        llAddNote = (LinearLayout) findViewById(R.id.llAddNote);
+        llAlarm = (LinearLayout) findViewById(R.id.llAlarm);
+        llAlarm.setEnabled(false);
+        //
+        c = Calendar.getInstance();
+        CurrentDateTime = c.get(Calendar.DAY_OF_MONTH) + "/" + c.get(Calendar.MONTH) + "/" + c.get(Calendar.YEAR)
+                + c.get(Calendar.HOUR) + ":" + c.get(Calendar.MINUTE);
+        txtCurrentDate.setText(CurrentDateTime);
+
+        // show spinner
+        txtAlarm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                llAlarm.setEnabled(true);
+                llAlarm.setVisibility(View.VISIBLE);
+                Log.d("Visible linnear layout", "visible");
+                spinerDropDown();
+                txtAlarm.setVisibility(View.GONE);
+            }
+        });
+        // hide spinner
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                llAlarm.setVisibility(LinearLayout.INVISIBLE);
+                llAlarm.setEnabled(false);
+                txtAlarm.setVisibility(View.VISIBLE);
+                strTime = "";
+                strDay = "";
+                strAlarm = "";
+            }
+        });
+    }
+    // show data spinner
     public void spinerDropDown() {
         try {
             adapterDay = new ArrayAdapter<String>(AddNote.this, android.R.layout.simple_spinner_item, arrDate);
@@ -108,48 +157,6 @@ public class AddNote extends Activity {
         } catch (Exception e) {
             Log.d("AddNote", "Load data for spinner Error...");
         }
-    }
-
-    public void getControls() {
-
-        spDate = (Spinner) findViewById(R.id.spDate);
-        spTime = (Spinner) findViewById(R.id.spTime);
-        txtContent = (EditText) findViewById(R.id.txtAddContent);
-        txtTitle = (EditText) findViewById(R.id.txtAddTitle);
-        txtAlarm = (TextView) findViewById(R.id.txtAlarm);
-        txtCurrentDate = (TextView) findViewById(R.id.txtCreatedDate);
-        btnCancel = (ImageView) findViewById(R.id.btnCancel);
-        llAddNote = (LinearLayout) findViewById(R.id.llAddNote);
-        llAlarm = (LinearLayout) findViewById(R.id.llAlarm);
-        llAlarm.setEnabled(false);
-
-        //
-        c = Calendar.getInstance();
-        CurrentDateTime = c.get(Calendar.DAY_OF_MONTH) + "/" + c.get(Calendar.MONTH) + "/" + c.get(Calendar.YEAR)
-                + c.get(Calendar.HOUR) + ":" + c.get(Calendar.MINUTE);
-        txtCurrentDate.setText(CurrentDateTime);
-
-        txtAlarm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                llAlarm.setEnabled(true);
-                llAlarm.setVisibility(View.VISIBLE);
-                Log.d("Visible linnear layout", "visible");
-                spinerDropDown();
-                txtAlarm.setVisibility(View.GONE);
-            }
-        });
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                llAlarm.setVisibility(LinearLayout.INVISIBLE);
-                llAlarm.setEnabled(false);
-                txtAlarm.setVisibility(View.VISIBLE);
-                strTime = "";
-                strDay = "";
-                strAlarm = "";
-            }
-        });
     }
 
     private class myOnItemClickListener implements OnItemSelectedListener {
@@ -183,7 +190,7 @@ public class AddNote extends Activity {
             strAlarm = "";
         }
     }
-
+    // set date when spinner seleted item
     public String setDate(int i) {
         c.add(Calendar.DATE, i);
         Day = c.get(Calendar.DAY_OF_MONTH);
@@ -246,18 +253,19 @@ public class AddNote extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    // call insertphoto activity
     public void InsertPhoto() {
         Intent i = new Intent(AddNote.this, InsertPhoto.class);
         startActivityForResult(i, REQUEST_CODE_ADD_NOTE);
         Log.d("AddNote", "Call activity InertPhoto");
     }
-
+    // call choosecolor activity
     public void SetBacground() {
         Intent i = new Intent(AddNote.this, ChooseColor.class);
         startActivityForResult(i, REQUEST_CODE_ADD_NOTE);
         Log.d("AddNote", "Call activity ChooseColor");
     }
-
+    // save a new notes
     public void SaveNote() {
 
         strAlarm = strDay.toString() + strTime.toString();
@@ -309,7 +317,7 @@ public class AddNote extends Activity {
 
         }
     }
-
+    // fuction use to start broadcastreceiver
     public void startAlert(int id, String strAlarm) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.YEAR, Year);
@@ -326,6 +334,7 @@ public class AddNote extends Activity {
 
     }
 
+    // control the results returned
     @SuppressLint("ResourceAsColor")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -357,9 +366,7 @@ public class AddNote extends Activity {
         }
 
     }
-
     // datepicker and timepiker dialog
-
     @Override
     protected Dialog onCreateDialog(int id) {
         switch (id) {

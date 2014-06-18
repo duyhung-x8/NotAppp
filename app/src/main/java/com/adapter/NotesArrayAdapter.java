@@ -25,17 +25,22 @@ import java.util.List;
 
 /**
  * Created by DUYHUNG on 16-06-2014.
+ *
+ * class use to custom item view for gridview
  */
 public class NotesArrayAdapter extends ArrayAdapter<Notes> {
+
+    // declare avariable use to call this contructor
     Activity context;
     ArrayList<Notes> arrNotes = null;
     int LayoutId;
 
+    // all controls
     TextView txtTitle, txtContent, txtCreatedDate;
     ImageView imgAlarm;
-    // RelativeLayout rlitem;
 
 
+    // function contructor of ArrayAdapter
     public NotesArrayAdapter(Activity context, int resource, ArrayList<Notes> arrNotes) {
         super(context, resource, arrNotes);
         this.context = context;
@@ -45,10 +50,11 @@ public class NotesArrayAdapter extends ArrayAdapter<Notes> {
 
     }
 
+    // function use to custom item view
     @SuppressLint("ResourceAsColor")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        // rlitem= MainActivity.rlItem;
+
         LayoutInflater inflater = context.getLayoutInflater();
         convertView = inflater.inflate(LayoutId, null);
 
@@ -68,8 +74,9 @@ public class NotesArrayAdapter extends ArrayAdapter<Notes> {
             txtTitle.setText(notes.getTitle());
             txtContent.setText(notes.getContent());
             txtCreatedDate.setText(notes.getCreatedDate());
-            int color = Integer.parseInt(notes.getBackground().trim());
 
+            // setbackgound for item view
+            int color = Integer.parseInt(notes.getBackground().trim());
             if (color == AddNote.RESULT_COLOR_BLUE) {
                 convertView.setBackgroundColor(context.getResources().getColor(R.color.color_blue));
             } else if (color == AddNote.RESULT_COLOR_YELLOW) {
@@ -79,7 +86,7 @@ public class NotesArrayAdapter extends ArrayAdapter<Notes> {
                 convertView.setBackgroundColor(context.getResources().getColor(R.color.color_green));
             }
             //.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_action_alarms2));
-
+            // Set imgAlarm resources
             if (!notes.getAlarm().equals("")) {
                 Log.d("Notes arr adapter", "load img..." + notes.getAlarm());
                 imgAlarm.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_action_alarms));
@@ -88,10 +95,6 @@ public class NotesArrayAdapter extends ArrayAdapter<Notes> {
         }
 
         return convertView;
-
-    }
-
-    public void setBackgound(int color) {
 
     }
 }
