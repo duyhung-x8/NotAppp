@@ -9,6 +9,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+/*
+* class use to handler choose color for a backgound item notes*/
 
 
 public class ChooseColor extends Activity {
@@ -16,27 +18,26 @@ public class ChooseColor extends Activity {
     Button btnWhite, btnYellow, btnGreen, btnBlue;
     LinearLayout llAddNote;
     String strColor = null;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_color);
 
+        //get controls
         llAddNote = (LinearLayout) findViewById(R.id.llAddNote);
         btnWhite = (Button) findViewById(R.id.btnWhite);
         btnYellow = (Button) findViewById(R.id.btnYellow);
         btnGreen = (Button) findViewById(R.id.btnGreen);
         btnBlue = (Button) findViewById(R.id.btnBlue);
 
+        // set onclicklistener
         btnWhite.setOnClickListener(new myOnclickListener());
         btnYellow.setOnClickListener(new myOnclickListener());
         btnGreen.setOnClickListener(new myOnclickListener());
         btnBlue.setOnClickListener(new myOnclickListener());
 
-
     }
-
+    // handler btn click
     private class myOnclickListener implements View.OnClickListener {
 
         @SuppressLint("ResourceAsColor")
@@ -62,7 +63,7 @@ public class ChooseColor extends Activity {
             }
         }
     }
-
+    // 
     public void setBackground(int color) {
         Intent i = getIntent();
         Bundle b = new Bundle();

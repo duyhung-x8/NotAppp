@@ -362,7 +362,6 @@ public class AddNote extends Activity {
                     llAddNote.setBackgroundColor(arrColor[4]);
                     break;
             }
-
         }
 
     }
@@ -386,7 +385,6 @@ public class AddNote extends Activity {
         public void onTimeSet(TimePicker timePicker, int hourOfDay, int minutes) {
             Hour = hourOfDay;
             Min = minutes;
-
         }
     };
     private DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDialog.OnDateSetListener() {

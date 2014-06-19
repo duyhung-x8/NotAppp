@@ -18,11 +18,13 @@
         <item>Next</item>
         <item>Other...</item>
     </string-array>
-
     <string-array name="arrtime">
         <item>9:00</item>
         <item>13:00</item>
         <item>20:00</item>
         <item>Other...</item>
     </string-array>
+
+    <string name="title_activity_edit_notet_acitivty">Edit Note</string>
+
 </resources>
