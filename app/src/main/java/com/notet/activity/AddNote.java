@@ -84,7 +84,7 @@ public class AddNote extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_note);
-        BitmapDrawable background=new BitmapDrawable(BitmapFactory.decodeResource(getResources(),R.drawable.bg_actionbar));
+        BitmapDrawable background = new BitmapDrawable(BitmapFactory.decodeResource(getResources(), R.drawable.bg_actionbar));
 
         ActionBar actionBar = getActionBar();
         //actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3399FF")));
@@ -93,8 +93,8 @@ public class AddNote extends Activity {
         arrDate = getResources().getStringArray(R.array.arrdate);
         arrTime = getResources().getStringArray(R.array.arrtime);
         getControls();
-        myHandler = new DabaseHandler(this);
-        int id = myHandler.idMax() + 1;
+
+
     }
 
     public void getControls() {
@@ -111,7 +111,7 @@ public class AddNote extends Activity {
         llAlarm.setEnabled(false);
         //
         c = Calendar.getInstance();
-        CurrentDateTime = c.get(Calendar.DAY_OF_MONTH) + "/" + c.get(Calendar.MONTH) + "/" + c.get(Calendar.YEAR)
+        CurrentDateTime = c.get(Calendar.DAY_OF_MONTH) + "/" + c.get(Calendar.MONTH) + "/" + c.get(Calendar.YEAR)+" "
                 + c.get(Calendar.HOUR) + ":" + c.get(Calendar.MINUTE);
         txtCurrentDate.setText(CurrentDateTime);
 
@@ -139,6 +139,7 @@ public class AddNote extends Activity {
             }
         });
     }
+
     // show data spinner
     public void spinerDropDown() {
         try {
@@ -190,6 +191,7 @@ public class AddNote extends Activity {
             strAlarm = "";
         }
     }
+
     // set date when spinner seleted item
     public String setDate(int i) {
         c.add(Calendar.DATE, i);
@@ -259,12 +261,14 @@ public class AddNote extends Activity {
         startActivityForResult(i, REQUEST_CODE_ADD_NOTE);
         Log.d("AddNote", "Call activity InertPhoto");
     }
+
     // call choosecolor activity
     public void SetBacground() {
         Intent i = new Intent(AddNote.this, ChooseColor.class);
         startActivityForResult(i, REQUEST_CODE_ADD_NOTE);
         Log.d("AddNote", "Call activity ChooseColor");
     }
+
     // save a new notes
     public void SaveNote() {
 
@@ -272,23 +276,34 @@ public class AddNote extends Activity {
         Log.d("AddNote", "nndndnnn" + strDay.toString());
         Log.d("AddNote", "nndndnnn" + strTime.toString());
 
-        if (txtTitle.getText().toString().equals("") && txtContent.getText().toString().equals("") && strAlarm.toString().equals("")) {
-            Log.d("dddddddddddd", "ddffffffdfdfdf");
+        if (txtTitle.getText().toString().equals("")) {
+            if (txtContent.getText().toString().equals("")) {
+                if (strAlarm.toString().equals("")) {
+                    finish();
+                    Log.d("all null","cancel insert");
+                } else {
+                    txtTitle.setText("Untitle");
+                    addNote();
+                    finish();
+                    Log.d("strAlarm not null","insert Untitle");
+                }
+            } else {
+                txtTitle.setText(txtContent.getText().toString());
+                addNote();
+                finish();
+                Log.d("Title null","insert no title");
+            }
+        } else {
+            addNote();
             finish();
-
-        } else if (txtTitle.getText().toString().equals("") && txtContent.getText().toString().equals("") && !strAlarm.toString().equals("")) {
-            txtTitle.setText("Untitle");
-            addNote();
-        } else if (txtTitle.getText().toString().equals("") && (!txtContent.getText().toString().equals(""))) {
-            txtTitle.setText(txtContent.getText());
-            addNote();
+            Log.d("title not null","insert note");
         }
     }
 
     public void addNote() {
         myHandler = new DabaseHandler(this);
         int id = myHandler.idMax() + 1;
-
+        Log.d("add note ","id max "+id);
         notes = new Notes();
         notes.setTitle(txtTitle.getText() + "");
         notes.setContent(txtContent.getText() + "");
@@ -301,24 +316,21 @@ public class AddNote extends Activity {
             myHandler.addNote(notes);
             myHandler.close();
             Log.d("AddNote", "Add note success.." + strAlarm);
-            finish();
+
         } catch (Exception e) {
             Log.d("AddNote", "Add new a note errorr..." + e.toString());
         }
-
+         // set alarm for this item.
         if (strAlarm != "") {
             Log.d("AddNote", "Add note strAlarm.." + strAlarm);
             startAlert(id, strAlarm);
 
-
-        } else {
-            Log.d("AddNote", "nndndnnn" + strDay);
-            Log.d("AddNote", "nndndnnn" + strTime);
-
         }
     }
-    // fuction use to start broadcastreceiver
+
+    // fuction use to start broadcastreceiver (id )
     public void startAlert(int id, String strAlarm) {
+        // get time from spiner
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.YEAR, Year);
         calendar.set(Calendar.MONTH, Month);
@@ -365,6 +377,7 @@ public class AddNote extends Activity {
         }
 
     }
+
     // datepicker and timepiker dialog
     @Override
     protected Dialog onCreateDialog(int id) {

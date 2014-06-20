@@ -44,14 +44,18 @@ public class MainActivity extends Activity {
     }
     // laoding data (use when call onCreate and onResume)
     public void loadMain() {
-        myDabaseHandler = new DabaseHandler(this);
+
+       myDabaseHandler = new DabaseHandler(this);
+//        myDabaseHandler.deleteNotes();
+//        myDabaseHandler.dropTable();
+//        myDabaseHandler.CreateTable();
+
         arrNote = myDabaseHandler.getAllNotesDESC();
         if (arrNote.size() > 0) {
             setContentView(R.layout.activity_main);
             gvNotes = (GridView) findViewById(R.id.gvNote);
             Log.d("MainActivity Notes size :", arrNote.size() + "");
             adapter = new NotesArrayAdapter(this, R.layout.custom_item_notes, arrNote);
-          //  Log.d("MainActivity adapter :", "load adapterErrro..");
             gvNotes.setAdapter(adapter);
         } else {
             setContentView(R.layout.activity_main_no_notes);

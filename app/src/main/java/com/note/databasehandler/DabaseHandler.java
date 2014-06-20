@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Created by DUYHUNG on 16-06-2014.
  * class use to handle model and create db for app
- *  create CRUD
+ * create CRUD
  */
 public class DabaseHandler extends SQLiteOpenHelper {
 
@@ -28,7 +28,8 @@ public class DabaseHandler extends SQLiteOpenHelper {
     // db name
     public static final String DATABASE_NAME = "NoteDB";
     //tbl name
-    public static final String TABLE_NOTES = "Notes";
+    public static final String TABLE_NOTES = "NewNotes";
+    public static final String TABLE_NEW_NOTES = "NewNotes";
 
     // all column of table notes
     public static final String KEY_ID = "Id";
@@ -40,14 +41,16 @@ public class DabaseHandler extends SQLiteOpenHelper {
 
     // string query create table notes
     public static final String CREATE_TABLE_NOTES = "CREATE TABLE " + TABLE_NOTES + "("
-            + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + KEY_ID + " INTEGER  IDENTITY(1,1) PRIMARY KEY ,"
             + KEY_TITLE + " TEXT,"
             + KEY_CONTENT + " TEXT,"
             + KEY_CREATED_DATE + " TEXT,"
             + KEY_ALARM + " TEXT,"
             + KEY_BACGROUND + " TEXT" + ")";
 
-    public void delDB(Context context){
+
+
+    public void delDB(Context context) {
         context.deleteDatabase(DATABASE_NAME);
     }
 
@@ -58,6 +61,7 @@ public class DabaseHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(CREATE_TABLE_NOTES);
+
     }
 
     @Override
@@ -65,23 +69,28 @@ public class DabaseHandler extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTES);
         onCreate(sqLiteDatabase);
     }
-    public void CreateTable(){
-        SQLiteDatabase db= getWritableDatabase();
+
+    public void CreateTable() {
+        SQLiteDatabase db = getWritableDatabase();
         onCreate(db);
-        Log.d("Create table ",TABLE_NOTES);
+        Log.d("Create table ", TABLE_NOTES);
 
     }
-    public void dropTable(){
-        SQLiteDatabase db= this.getWritableDatabase();
-        db.execSQL("DROP TABLE IF EXISTS "+TABLE_NOTES);
+
+    public void dropTable() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTES);
         onCreate(db);
-        Log.d("drop table ",TABLE_NOTES);
+        Log.d("drop table ", TABLE_NOTES);
     }
+
     // CRUD (create,read,update,delete)
     public void addNote(Notes note) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
+
+        //values.put(KEY_ID,note.getId());
         values.put(KEY_TITLE, note.getTitle());
         values.put(KEY_CONTENT, note.getContent());
         values.put(KEY_CREATED_DATE, note.getCreatedDate());
@@ -91,7 +100,7 @@ public class DabaseHandler extends SQLiteOpenHelper {
         // insert row
         db.insert(TABLE_NOTES, null, values);
         db.close();
-        Log.d("Add Insert NOTE", note.toString());
+        Log.d("Add Insert NOTE", note.toString() + " Id :" + (idMax() + 1));
 
 
     }
@@ -144,6 +153,7 @@ public class DabaseHandler extends SQLiteOpenHelper {
 
         return arrNotes;
     }
+
     public ArrayList<Notes> getAllNotesDESC() {
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -180,18 +190,25 @@ public class DabaseHandler extends SQLiteOpenHelper {
         cursor.close();
         return cursor.getCount();
     }
+
     // get id notes max
-    public int idMax(){
-        int id=0;
-        ArrayList<Notes> arrayList=getAllNotes();
-        Notes notes=new Notes();
-        for(int i=0;i<arrayList.size()-1;i++) {
-            notes=arrayList.get(i);
-            Log.d("Id maxxx:",""+notes.getId());
+    public int idMax() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String select = "SELECT MAX(" + KEY_ID + ")" + " FROM " + TABLE_NOTES;
+
+        Cursor cursor = db.rawQuery(select, null);
+        int id = 0;
+        if (cursor.getCount() > 0) {
+            Log.d("item note count() :", "" +cursor.getCount());
+            cursor.moveToFirst();
+            id = cursor.getInt(0);
+            Log.d("item note id :", "" +id);
         }
-       // Log.d("Id max:",""+id);
-        return  id;
+        Log.d("Id max :", "" + id);
+
+        return id;
     }
+
     public int updateNotes(Notes notes) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -206,6 +223,7 @@ public class DabaseHandler extends SQLiteOpenHelper {
         Log.d("UPDATE NOTE", notes.toString());
         return i;
     }
+
     // delete note selected
     public void deleteNotes(Notes notes) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -213,10 +231,11 @@ public class DabaseHandler extends SQLiteOpenHelper {
         db.close();
         Log.d("DELETE NOTE", notes.toString());
     }
+
     // del table notes if need
     public void deleteNotes() {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("DELETE FROM "+TABLE_NOTES);
+        db.execSQL("DELETE FROM " + TABLE_NOTES);
         db.close();
         Log.d("DELETE NOTE", "delete all notes");
     }
